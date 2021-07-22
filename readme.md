@@ -11,7 +11,7 @@ This project was made using Python 3.8.2
 
 ### How to run project locally
 
-You can download or clone this repository, then navigate to this folder and run the python script.
+You can download or clone this repository, then navigate to this folder and run the python script. You will need your own collection of .csv files to aggregate, since this is for my personal s3 bucket :)
 
 ## Built With
 
