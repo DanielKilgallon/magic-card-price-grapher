@@ -66,7 +66,8 @@
                 }    
                 for (let i = 0; i < data["data"].length; i++) {
                     const option = document.createElement("option");
-                    option.value = data["data"][i].toLowerCase();
+                    const regex = new RegExp(',|"');
+                    option.value = data["data"][i].toLowerCase().replace(regex, "");
                     dropdown_list.appendChild(option);
                 }
             }).catch(function(err) {
