@@ -52,7 +52,24 @@
         }
 
         function autocomplete_card_name() {
-            const card_name = document.getElementById("card_name").value
+            const card_name = document.getElementById("card_name");
+            const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name;
+            fetch(url).then(function(response) {
+                return response.json();
+            }).then(function(data) {
+                console.log(data);
+                const dropdown_list = document.getElementById("dropdown_list");
+                while (dropdown_list.hasChildNodes()) {
+                    dropdown_list.removeChild(dropdown_list.lastChild);
+                }    
+                for (let i = 0; i < data["data"].length; i++) {
+                    const option = document.createElement("option");
+                    option.value = data["data"][i];
+                    dropdown_list.appendChild(option);
+                }
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
 
         document.getElementById("create_graph").addEventListener("click", createPlot);
@@ -60,22 +77,8 @@
     </script>
 </head>
 <body>
-    <input id="card_name" list="autocomplete_cards" type="text" value="" />
-    <datalist id="autocomplete_cards">
-        <option value="HTML">
-        <option value="CSS">
-        <option value="JavaScript">
-        <option value="Java">
-        <option value="Ruby">
-        <option value="PHP">
-        <option value="Go">
-        <option value="Erlang">
-        <option value="Python">
-        <option value="C">
-        <option value="C#">
-        <option value="C++">
-      </datalist>
+    <input id="card_name" list="dropdown_list" type="text" value="" />
+    <datalist id="dropdown_list"></datalist>
     <input id="create_graph" type="button" value="click me!" />
     <div id="gd"></div>
-    
 </body>
