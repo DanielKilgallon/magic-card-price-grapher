@@ -27,4 +27,4 @@ jobs:
 
     - name: Copy file S3 bucket website
       run: |
-        aws s3 cp index.html s3://card-prices-data-lake
+        aws s3 cp index.html s3://card-prices-data-lake --acl public-read
