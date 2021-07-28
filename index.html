@@ -50,7 +50,13 @@
                 }
             }
         }
+
+        function autocomplete_card_name() {
+            const card_name = document.getElementById("card_name").value
+        }
+
         document.getElementById("create_graph").addEventListener("click", createPlot);
+        document.getElementById("card_name").addEventListener("change", autocomplete_card_name);
     </script>
 </head>
 <body>
