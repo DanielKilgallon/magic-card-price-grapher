@@ -53,7 +53,7 @@
 
         function autocomplete_card_name() {
             const card_name = document.getElementById("card_name");
-            const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name;
+            const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name.value;
             fetch(url).then(function(response) {
                 return response.json();
             }).then(function(data) {

@@ -34,3 +34,5 @@ with open('output.csv', 'w', newline='') as csvfile:
     spamwriter.writerow(headers)
     for key in card_data:
         spamwriter.writerow(card_data[key])
+
+# os.system('cmd /c "aws s3 cp output.csv s3://card-prices-data-lake --acl public-read"')
