@@ -43,7 +43,7 @@
         function createPlot() {
             const card_name = document.getElementById("card_name").value
             for (let i = 0; i < card_arr.length; i++) {
-                if (card_arr[i][1].includes(card_name)) {
+                if (card_arr[i][1].includes(card_name.replace(",|\"", ""))) {
                     layout.title = card_arr[i][1];
                     Plotly.newPlot("gd", [{ y: card_arr[i].slice(2), x: card_arr[0].slice(2), hovertemplate: '$%{y:.2f}<extra></extra>'}], layout);
                     return;
