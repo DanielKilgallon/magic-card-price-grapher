@@ -1,0 +1,61 @@
+<head>
+    <script type="module">
+        import "https://cdn.plot.ly/plotly-2.3.0.min.js";
+
+        const layout = {
+                xaxis: {
+                    title: 'Date'
+                },
+                yaxis: {
+                    title: 'Price',
+                    showspikes:true
+                },
+                hoverlabel: {
+                    bgcolor:"black",
+                    bordercolor:"white",
+                    font: {size:18}
+                },
+                font: {size:18},
+                responsive: true
+            };
+        let card_arr = [];
+        
+        const regex = new RegExp(',|\n');
+        const response = await fetch("./output.csv");
+        if (response.ok) {
+            const text = await response.text();
+            const text_arr = text.split(regex);
+            let temp_arr = [];
+            let counter = 1;
+            for (let i = 0; i < text_arr.length; i++) {
+                if (counter > 10) {
+                    counter = 1;
+                    card_arr.push(temp_arr);
+                    temp_arr = [];
+                }
+                temp_arr.push(text_arr[i])
+                counter += 1
+            }
+        } else {
+            alert("HTTP-Error: " + response.status);
+        }
+
+        function createPlot() {
+            const card_name = document.getElementById("card_name").value
+            for (let i = 0; i < card_arr.length; i++) {
+                if (card_arr[i][1].includes(card_name)) {
+                    layout.title = card_arr[i][1];
+                    Plotly.newPlot("gd", [{ y: card_arr[i].slice(2), x: card_arr[0].slice(2), hovertemplate: '$%{y:.2f}<extra></extra>'}], layout);
+                    return;
+                }
+            }
+        }
+        document.getElementById("create_graph").addEventListener("click", createPlot);
+    </script>
+</head>
+<body>
+    <input id="card_name" type="text" value="" />
+    <input id="create_graph" type="button" value="click me!" />
+    <div id="gd"></div>
+    
+</body>

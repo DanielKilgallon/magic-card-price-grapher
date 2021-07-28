@@ -2,7 +2,7 @@ import os
 import re
 import csv
 
-# os.system('cmd /c "aws s3 sync s3://card-prices-data-lake ./price-data-files/"')
+os.system('cmd /c "aws s3 sync s3://card-prices-data-lake ./price-data-files/"')
  
 card_data = {}
 headers = ['oracle_id','card name']
