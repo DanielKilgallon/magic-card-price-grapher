@@ -63,11 +63,13 @@
                     dropdown_list.removeChild(dropdown_list.lastChild);
                 }    
                 for (let i = 0; i < data["data"].length; i++) {
-                    const option = document.createElement("option");
-                    option.value = data["data"][i];
-                    let regex = new RegExp("[^a-zA-Z]");
-                    option.innerText = ["data"][i].replace(regex, "");
-                    dropdown_list.appendChild(option);
+                    if (data["data"][i]) {
+                        const option = document.createElement("option");
+                        option.value = data["data"][i];
+                        let regex = new RegExp("[^a-zA-Z]");
+                        option.innerText = ["data"][i].replace(regex, "");
+                        dropdown_list.appendChild(option);
+                    }
                 }
             }).catch(function(err) {
                 console.log(err);
