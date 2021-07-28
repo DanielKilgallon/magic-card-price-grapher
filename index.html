@@ -63,13 +63,9 @@
                     dropdown_list.removeChild(dropdown_list.lastChild);
                 }    
                 for (let i = 0; i < data["data"].length; i++) {
-                    if (data["data"][i]) {
-                        const option = document.createElement("option");
-                        option.value = data["data"][i];
-                        let regex = new RegExp("[^a-zA-Z]");
-                        option.innerText = ["data"][i].replace(regex, "");
-                        dropdown_list.appendChild(option);
-                    }
+                    const option = document.createElement("option");
+                    option.value = data["data"][i];
+                    dropdown_list.appendChild(option);
                 }
             }).catch(function(err) {
                 console.log(err);
@@ -81,7 +77,7 @@
     </script>
 </head>
 <body>
-    <input id="card_name" list="dropdown_list" type="text" value="" />
+    <input id="card_name" list="dropdown_list" type="text" />
     <datalist id="dropdown_list"></datalist>
     <input id="create_graph" type="button" value="click me!" />
     <div id="gd"></div>
