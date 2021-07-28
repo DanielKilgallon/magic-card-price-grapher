@@ -51,8 +51,9 @@
             }
         }
 
-        function autocomplete_card_name(card_name) {
-            const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name;
+        function autocomplete_card_name() {
+            const card_name = document.getElementById("card_name");
+            const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name.value;
             fetch(url).then(function(response) {
                 return response.json();
             }).then(function(data) {
@@ -72,10 +73,11 @@
         }
 
         document.getElementById("create_graph").addEventListener("click", createPlot);
+        document.getElementById("card_name").addEventListener("onkeyup", autocomplete_card_name);
     </script>
 </head>
 <body>
-    <input id="card_name" list="dropdown_list" type="text" value="" onChange="autocomplete_card_name(this.value);" />
+    <input id="card_name" list="dropdown_list" type="text" value="" />
     <datalist id="dropdown_list"></datalist>
     <input id="create_graph" type="button" value="click me!" />
     <div id="gd"></div>
