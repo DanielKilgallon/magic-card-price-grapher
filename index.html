@@ -51,13 +51,12 @@
             }
         }
 
-        function autocomplete_card_name() {
-            const card_name = document.getElementById("card_name");
-            const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name.value;
+        function autocomplete_card_name(card_name) {
+            const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name;
             fetch(url).then(function(response) {
                 return response.json();
             }).then(function(data) {
-                console.log(data);
+                console.log(data["data"]);
                 const dropdown_list = document.getElementById("dropdown_list");
                 while (dropdown_list.hasChildNodes()) {
                     dropdown_list.removeChild(dropdown_list.lastChild);
@@ -73,11 +72,10 @@
         }
 
         document.getElementById("create_graph").addEventListener("click", createPlot);
-        document.getElementById("card_name").addEventListener("change", autocomplete_card_name);
     </script>
 </head>
 <body>
-    <input id="card_name" list="dropdown_list" type="text" value="" />
+    <input id="card_name" list="dropdown_list" type="text" value="" onChange="autocomplete_card_name(this.value);" />
     <datalist id="dropdown_list"></datalist>
     <input id="create_graph" type="button" value="click me!" />
     <div id="gd"></div>
