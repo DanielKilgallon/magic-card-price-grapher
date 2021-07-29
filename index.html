@@ -5,14 +5,16 @@
     <script type="module">
         import "https://cdn.plot.ly/plotly-2.3.0.min.js";
 
+        const config = {responsive: true}
+
         const layout = {
             xaxis: {
-                title: 'Date'
+                title: "Date"
             },
             yaxis: {
-                title: 'Price',
+                title: "Price",
                 showspikes:true,
-                rangemode: 'tozero'
+                rangemode: "tozero"
             },
             hoverlabel: {
                 bgcolor:"black",
@@ -20,41 +22,41 @@
                 font: {size:18}
             },
             font: {size:18},
-            responsive: true
+            height: window.innerHeight - 100
         };
         let card_arr = [];
-        
-        const regex = new RegExp(',|\n');
+
         const response = await fetch("./output.csv");
         if (response.ok) {
             const text = await response.text();
-            const text_arr = text.split(regex);
-            let temp_arr = [];
-            let counter = 1;
-            for (let i = 0; i < text_arr.length; i++) {
-                if (counter > 10) {
-                    counter = 1;
-                    card_arr.push(temp_arr);
-                    temp_arr = [];
+            const lines = text.split("\r\n");
+            for (let i = 0; i < lines.length; i++) {
+                let temp_arr = [];
+                const line_data = lines[i].split(",");
+                for (let j = 0; j < line_data.length; j++) {
+                    temp_arr.push(line_data[j]);
                 }
-                temp_arr.push(text_arr[i])
-                counter += 1
+                card_arr.push(temp_arr);
             }
         } else {
             alert("HTTP-Error: " + response.status);
         }
 
         function createPlot() {
-            const card_name = document.getElementById("card_name")
+            const card_name = document.getElementById("card_name");
             for (let i = 0; i < card_arr.length; i++) {
-                if (card_arr[i][1].toLowerCase().includes(card_name.value.replace(",|\"", "").toLowerCase())) {
+                const card_arr_spot = card_arr[i][1].toLowerCase();
+                const perfect_card_name = card_name.value.replace(",|\"", "").toLowerCase();
+                const card_name_check = card_arr_spot.split("\/\/");
+                if (!(card_name_check.length > 1 && card_name_check[0].trim() == card_name_check[1].trim()) && card_arr_spot.includes(perfect_card_name)) {
                     layout.title = card_arr[i][1];
-                    Plotly.newPlot("gd", [{ y: card_arr[i].slice(2), x: card_arr[0].slice(2), hovertemplate: '$%{y:.2f}<extra></extra>'}], layout);
+                    Plotly.newPlot("gd", [{ y: card_arr[i].slice(2), x: card_arr[0].slice(2), hovertemplate: "$%{y:.2f}<extra></extra>"}], layout, config);
                     return;
                 }
+                
             }
             layout.title = "could not find card";
-            Plotly.newPlot("gd", [], layout)
+            Plotly.newPlot("gd", [], layout, config)
         }
 
         function autocomplete_card_name() {
@@ -63,30 +65,28 @@
             fetch(url).then(function(response) {
                 return response.json();
             }).then(function(data) {
-                console.log(data["data"]);
                 const dropdown_list = document.getElementById("dropdown_list");
                 while (dropdown_list.hasChildNodes()) {
                     dropdown_list.removeChild(dropdown_list.lastChild);
                 }
                 for (let i = 0; i < data["data"].length; i++) {
                     const option = document.createElement("option");
-                    const regex = new RegExp(',|"');
+                    const regex = new RegExp(",|\"");
                     option.value = data["data"][i].toLowerCase().replace(regex, "");
                     dropdown_list.appendChild(option);
                 }
             }).catch(function(err) {
-                console.log(err);
+                alert("HTTP-Error: " + err);
             });
         }
-
         document.getElementById("create_graph").addEventListener("click", createPlot);
         document.getElementById("card_name").addEventListener("input", autocomplete_card_name);
     </script>
 </head>
 <body>
-    <input id="card_name" list="dropdown_list" type="text" />
-    <datalist id="dropdown_list"></datalist>
     <span>
+        <input id="card_name" list="dropdown_list" type="text" />
+        <datalist id="dropdown_list"></datalist>
         <input id="create_graph" type="button" value="Show Price" />
     </span>
     <div id="gd"></div>

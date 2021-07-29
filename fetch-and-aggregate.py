@@ -2,8 +2,8 @@ import os
 import re
 import csv
 
-# os.system('cmd /c "aws s3 sync s3://card-prices-data-lake ./price-data-files/"')
- 
+# os.system('cmd /c "aws s3 sync s3://card-prices-data-lake/daily-files ./price-data-files/"')
+
 card_data = {}
 headers = ['oracle_id','card name']
 
@@ -30,9 +30,9 @@ for file_name in files:
     file_number = file_number + 1
 
 with open('output.csv', 'w', newline='') as csvfile:
-    spamwriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    spamwriter.writerow(headers)
+    csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    csv_writer.writerow(headers)
     for key in card_data:
-        spamwriter.writerow(card_data[key])
+        csv_writer.writerow(card_data[key])
 
-# os.system('cmd /c "aws s3 cp output.csv s3://card-prices-data-lake --acl public-read"')
+# os.system('cmd /c "aws s3 cp ./output.csv s3://card-prices-data-lake --acl public-read"')
