@@ -1,23 +1,27 @@
 <head>
+    <title>Magic Price Grapher</title>
+    <meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <script type="module">
         import "https://cdn.plot.ly/plotly-2.3.0.min.js";
 
         const layout = {
-                xaxis: {
-                    title: 'Date'
-                },
-                yaxis: {
-                    title: 'Price',
-                    showspikes:true
-                },
-                hoverlabel: {
-                    bgcolor:"black",
-                    bordercolor:"white",
-                    font: {size:18}
-                },
-                font: {size:18},
-                responsive: true
-            };
+            xaxis: {
+                title: 'Date'
+            },
+            yaxis: {
+                title: 'Price',
+                showspikes:true,
+                rangemode: 'tozero'
+            },
+            hoverlabel: {
+                bgcolor:"black",
+                bordercolor:"white",
+                font: {size:18}
+            },
+            font: {size:18},
+            responsive: true
+        };
         let card_arr = [];
         
         const regex = new RegExp(',|\n');
@@ -63,7 +67,7 @@
                 const dropdown_list = document.getElementById("dropdown_list");
                 while (dropdown_list.hasChildNodes()) {
                     dropdown_list.removeChild(dropdown_list.lastChild);
-                }    
+                }
                 for (let i = 0; i < data["data"].length; i++) {
                     const option = document.createElement("option");
                     const regex = new RegExp(',|"');
