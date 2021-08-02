@@ -1,9 +1,10 @@
-# CSV Aggregator
+#  magic-card-price-grapher
 
-A script I made to aggregate daily generated files stored in S3 into one .csv file. The steps are:
+A script I made to aggregate .csv files stored in S3 into one .csv file and upload it back to S3. The steps are:
 * Sync local folder with S3 bucket
 * Read and collect data from each file into Map
 * Write aggregated data to a .csv file
+* Upload single output file to S3 bucket
 
 ## Installing and Running
 
