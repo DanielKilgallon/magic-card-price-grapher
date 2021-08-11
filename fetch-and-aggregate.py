@@ -2,7 +2,7 @@ import os
 import re
 import csv
 
-# os.system('cmd /c "aws s3 sync s3://card-prices-data-lake/daily-files ./price-data-files/"')
+os.system('cmd /c "aws s3 sync s3://card-prices-data-lake/daily-files ./price-data-files/"')
 
 card_data = {}
 headers = ['oracle_id','card name']
@@ -35,4 +35,4 @@ with open('output.csv', 'w', newline='') as csvfile:
     for key in card_data:
         csv_writer.writerow(card_data[key])
 
-# os.system('cmd /c "aws s3 cp ./output.csv s3://card-prices-data-lake --acl public-read"')
+os.system('cmd /c "aws s3 cp ./output.csv s3://card-prices-data-lake --acl public-read"')

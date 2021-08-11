@@ -17,7 +17,7 @@ You can download or clone this repository, then navigate to this folder and run 
 ## Built With
 
 * [Python 3](https://www.python.org/) - The language
-* [MasterPlan](https://github.com/SolarLune/masterplan) - light-weight project management software
+* [MasterPlan](https://solarlune.itch.io/masterplan) - light-weight project management software
 
 ## Authors
 
