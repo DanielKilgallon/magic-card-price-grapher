@@ -3,10 +3,10 @@
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
+  schedule:
+    - cron: "0 3 1 * *" # At 03:00 on day-of-month 1
 
-name: Deploy to Amazon S3
+name: Compile and Deploy
 
 jobs:
   deploy:
@@ -15,16 +15,23 @@ jobs:
     environment: production
 
     steps:
-    - name: checkout
-      uses: actions/checkout@v2
+      - name: checkout
+        uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-    - name: Copy file to S3 bucket
-      run: |
-        aws s3 cp index.html s3://card-prices-data-lake --acl public-read
+      - name: Copy files from S3 bucket
+        run: |
+          mkdir ./price-data-files/
+          aws s3 sync s3://card-prices-data-lake/daily-files ./price-data-files/
+
+      - name: Compile data
+        run: python3 ./fetch-and-aggregate.py
+
+      - name: Copy file to S3 bucket
+        run: aws s3 cp ./index.html s3://card-prices-data-lake --acl public-read

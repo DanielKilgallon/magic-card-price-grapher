@@ -2,7 +2,7 @@ import os
 import re
 import csv
 
-os.system('cmd /c "aws s3 sync s3://card-prices-data-lake/daily-files ./price-data-files/"')
+# os.system('cmd /c "aws s3 sync s3://card-prices-data-lake/daily-files ./price-data-files/"')
 
 card_data = {}
 headers = ['oracle_id','card name']
@@ -13,10 +13,10 @@ file_number = 0
 for file_name in files:
     file_name_arr = re.split('_|\.', file_name)
     headers.append(file_name_arr[1])
-    with open(file_path + file_name, mode ='r') as file:
+    with open(file_path + file_name, mode = 'r') as file:
         csvFile = csv.reader(file)
         for line in csvFile:
-            card_name = line[1].replace(',', '').replace('"', '')
+            card_name = line[1].replace(",", '').replace('"', '').replace("\'", '')
             if line[0] in card_data:
                 card_data[line[0]].append(line[2])
             else:
@@ -29,10 +29,10 @@ for file_name in files:
                 card_data[line[0]] = buffer
     file_number = file_number + 1
 
-with open('output.csv', 'w', newline='') as csvfile:
+with open('output.csv', mode = 'w', newline = '') as csvfile:
     csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(headers)
     for key in card_data:
         csv_writer.writerow(card_data[key])
 
-os.system('cmd /c "aws s3 cp ./output.csv s3://card-prices-data-lake --acl public-read"')
+# os.system('cmd /c "aws s3 cp ./output.csv s3://card-prices-data-lake --acl public-read"')

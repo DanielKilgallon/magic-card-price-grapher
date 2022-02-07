@@ -46,7 +46,7 @@
             const card_name = document.getElementById("card_name");
             for (let i = 0; i < card_arr.length; i++) {
                 const card_arr_spot = card_arr[i][1].toLowerCase();
-                const perfect_card_name = card_name.value.replace(",|\"", "").toLowerCase();
+                const perfect_card_name = card_name.value.replace(",", '').replace('"', '').replace("\'", '').toLowerCase();
                 const card_name_check = card_arr_spot.split("\/\/");
                 if (!(card_name_check.length > 1 && card_name_check[0].trim() == card_name_check[1].trim()) && card_arr_spot.includes(perfect_card_name)) {
                     layout.title = card_arr[i][1];
