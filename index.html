@@ -1,70 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <title>Magic Price Grapher</title>
     <meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <script type="module">
         import "https://cdn.plot.ly/plotly-2.3.0.min.js";
 
-        const config = {responsive: true}
+        const config = { responsive: true }
 
         const layout = {
-            xaxis: {
-                title: "Date"
-            },
+            xaxis: { title: "Date" },
             yaxis: {
                 title: "Price",
-                showspikes:true,
+                showspikes: true,
                 rangemode: "tozero"
             },
             hoverlabel: {
-                bgcolor:"black",
-                bordercolor:"white",
-                font: {size:18}
+                bgcolor: "black",
+                bordercolor: "white",
+                font: { size: 18 }
             },
-            font: {size:18},
+            font: { size: 18 },
             height: window.innerHeight - 100
         };
-        let card_arr = [];
-
+        const card_map = new Map();
         const response = await fetch("./output.csv");
+
         if (response.ok) {
             const text = await response.text();
             const lines = text.split("\r\n");
             for (let i = 0; i < lines.length; i++) {
-                let temp_arr = [];
                 const line_data = lines[i].split(",");
-                for (let j = 0; j < line_data.length; j++) {
-                    temp_arr.push(line_data[j]);
+                const card_name = line_data[1] ? line_data[1] : "";
+                if (card_name.includes("\/\/")) {
+                    card_name.split("\/\/").forEach(split_card_name => {
+                        card_map.set(sanitize_card_name(split_card_name), line_data.slice(2));
+                    });
                 }
-                card_arr.push(temp_arr);
+                card_map.set(sanitize_card_name(line_data[1]), line_data.slice(2));
             }
         } else {
             alert("HTTP-Error: " + response.status);
         }
 
         function createPlot() {
-            const card_name = document.getElementById("card_name");
-            for (let i = 0; i < card_arr.length; i++) {
-                const card_arr_spot = card_arr[i][1].toLowerCase();
-                const perfect_card_name = card_name.value.replace(",", '').replace('"', '').replace("\'", '').toLowerCase();
-                const card_name_check = card_arr_spot.split("\/\/");
-                if (!(card_name_check.length > 1 && card_name_check[0].trim() == card_name_check[1].trim()) && card_arr_spot.includes(perfect_card_name)) {
-                    layout.title = card_arr[i][1];
-                    Plotly.newPlot("gd", [{ y: card_arr[i].slice(2), x: card_arr[0].slice(2), hovertemplate: "$%{y:.2f}<extra></extra>"}], layout, config);
-                    return;
-                }
-                
+            const sanitized_name = get_card_name_input();
+            const card_prices = card_map.get(sanitized_name);
+
+            if (card_prices) {
+                layout.title = sanitized_name;
+                Plotly.newPlot("plot-div", [{ y: card_prices.slice(2), x: card_map.get("card name").slice(2), hovertemplate: "$%{y:.2f}<extra></extra>" }], layout, config);
+            } else {
+                layout.title = "No data found for: " + sanitized_name;
+                Plotly.newPlot("plot-div", [], layout, config);
             }
-            layout.title = "could not find card";
-            Plotly.newPlot("gd", [], layout, config)
+        }
+
+        function get_card_name_input() {
+            return sanitize_card_name(document.getElementById("card_name").value);
+        }
+
+        function sanitize_card_name(card_name) {
+            if (card_name) {
+                const re = new RegExp('[^\\sa-zA-Z]');
+                return card_name.replace(re, '').toLowerCase().trim();
+            }
+            return "";
         }
 
         function autocomplete_card_name() {
             const card_name = document.getElementById("card_name");
             const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name.value;
-            fetch(url).then(function(response) {
+            fetch(url).then(function (response) {
                 return response.json();
-            }).then(function(data) {
+            }).then(function (data) {
                 const dropdown_list = document.getElementById("dropdown_list");
                 while (dropdown_list.hasChildNodes()) {
                     dropdown_list.removeChild(dropdown_list.lastChild);
@@ -75,7 +86,7 @@
                     option.value = data["data"][i].toLowerCase().replace(regex, "");
                     dropdown_list.appendChild(option);
                 }
-            }).catch(function(err) {
+            }).catch(function (err) {
                 alert("HTTP-Error: " + err);
             });
         }
@@ -83,11 +94,14 @@
         document.getElementById("card_name").addEventListener("input", autocomplete_card_name);
     </script>
 </head>
+
 <body>
     <span>
         <input id="card_name" list="dropdown_list" type="text" />
         <datalist id="dropdown_list"></datalist>
         <input id="create_graph" type="button" value="Show Price" />
     </span>
-    <div id="gd"></div>
+    <div id="plot-div"></div>
 </body>
+
+</html>
