@@ -45,17 +45,21 @@
             alert("HTTP-Error: " + response.status);
         }
 
-        function createPlot() {
-            const sanitized_name = get_card_name_input();
-            const card_prices = card_map.get(sanitized_name);
+        function createPlot(card_name) {
+            const card_prices = card_map.get(card_name);
 
             if (card_prices) {
-                layout.title = sanitized_name;
+                layout.title = card_name;
                 Plotly.newPlot("plot-div", [{ y: card_prices.slice(2), x: card_map.get("card name").slice(2), hovertemplate: "$%{y:.2f}<extra></extra>" }], layout, config);
             } else {
-                layout.title = "No data found for: " + sanitized_name;
+                layout.title = "No data found for: " + card_name;
                 Plotly.newPlot("plot-div", [], layout, config);
             }
+        }
+
+        function createPlotFromDiv() {
+            const sanitized_name = get_card_name_input();
+            createPlot(sanitized_name);
         }
 
         function get_card_name_input() {
@@ -70,27 +74,45 @@
             return "";
         }
 
+        function clearAndGetList() {
+            const card_list = document.getElementById("card-list");
+            while (card_list.hasChildNodes()) {
+                card_list.removeChild(card_list.lastChild);
+            }
+            return card_list;
+        }
+
         function autocomplete_card_name() {
             const card_name = document.getElementById("card_name");
             const url = "https://api.scryfall.com/cards/autocomplete?q=" + card_name.value;
             fetch(url).then(function (response) {
                 return response.json();
             }).then(function (data) {
-                const dropdown_list = document.getElementById("dropdown_list");
-                while (dropdown_list.hasChildNodes()) {
-                    dropdown_list.removeChild(dropdown_list.lastChild);
-                }
+                const card_list = clearAndGetList();
+                const card_prices_arr = [];
                 for (let i = 0; i < data["data"].length; i++) {
-                    const option = document.createElement("option");
+                    const li = document.createElement("li");
                     const regex = new RegExp(",|\"");
-                    option.value = data["data"][i].toLowerCase().replace(regex, "");
-                    dropdown_list.appendChild(option);
+                    li.innerText = data["data"][i].toLowerCase().replace(regex, "");
+
+                    if (li.innerText != "" && card_map.get(li.innerText)) {
+                        li.onclick = function () { createPlot(li.innerText) };
+                        // card_list.appendChild(li);
+                        const obj = {
+                            y: card_map.get(li.innerText).slice(2),
+                            x: card_map.get("card name").slice(2),
+                            hovertemplate: "$%{y:.2f}",
+                            name: li.innerText
+                        };
+                        card_prices_arr.push(obj);
+                    }
                 }
+                Plotly.newPlot("plot-div", card_prices_arr, layout, config);
             }).catch(function (err) {
                 alert("HTTP-Error: " + err);
             });
         }
-        document.getElementById("create_graph").addEventListener("click", createPlot);
+        // document.getElementById("create_graph").addEventListener("click", createPlotFromDiv);
         document.getElementById("card_name").addEventListener("input", autocomplete_card_name);
     </script>
 </head>
@@ -98,7 +120,7 @@
 <body>
     <span>
         <input id="card_name" list="dropdown_list" type="text" />
-        <datalist id="dropdown_list"></datalist>
+        <ul id="card-list"></ul>
         <input id="create_graph" type="button" value="Show Price" />
     </span>
     <div id="plot-div"></div>
