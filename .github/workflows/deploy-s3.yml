@@ -35,5 +35,5 @@ jobs:
 
       - name: Copy file to S3 bucket
         run: |
-          aws s3 cp ./index.html s3://card-prices-data-lake --acl public-read
+          aws s3 cp ./src/ s3://card-prices-data-lake --recursive --acl public-read
           aws s3 cp ./output.csv s3://card-prices-data-lake --acl public-read
