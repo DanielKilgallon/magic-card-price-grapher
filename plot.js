@@ -1,5 +1,4 @@
 import "https://cdn.plot.ly/plotly-2.3.0.min.js";
-import "./card-store.js"
 const config = { responsive: true }
 
 const layout = {
@@ -18,6 +17,7 @@ const layout = {
     height: window.innerHeight - 100
 };
 const card_map = new Map();
+
 const response = await fetch("./output.csv");
 
 if (response.ok) {
@@ -51,8 +51,8 @@ function createPlot(card_name) {
 
 function sanitize_card_name(card_name) {
     if (card_name) {
-        const re = new RegExp('[^\\sa-zA-Z]');
-        return card_name.replace(re, '').toLowerCase().trim();
+        const cardNameRegex = new RegExp(/[^\sa-zA-Z]/g);
+        return card_name.replaceAll(cardNameRegex, '').toLowerCase().trim();
     }
     return "";
 }
@@ -75,10 +75,9 @@ function autocomplete_card_name() {
         const card_prices_arr = [];
         for (let i = 0; i < data["data"].length; i++) {
             const li = document.createElement("li");
-            const regex = new RegExp(",|\"");
-            li.innerText = data["data"][i].toLowerCase().replace(regex, "");
+            li.innerText = sanitize_card_name(data["data"][i].toLowerCase());
 
-            if (li.innerText != "" && card_map.get(li.innerText)) {
+            if (li.innerText != "" && card_map.has(sanitize_card_name(li.innerText))) {
                 li.onclick = function () { createPlot(li.innerText) };
                 const a_tag = document.createElement("a");
                 a_tag.href = "#";
