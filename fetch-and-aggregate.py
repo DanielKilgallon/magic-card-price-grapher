@@ -2,19 +2,17 @@ import os
 import re
 import csv
 
-# os.system('cmd /c "aws s3 sync s3://card-prices-data-lake/daily-files ./price-data-files/"')
-
 card_data = {}
 headers = ['oracle_id','card name']
 
-file_path = 'price-data-files/'
+file_path = 'daily-files/'
 files = os.listdir(file_path)
 file_number = 0
 print("aggregating data files")
 for file_name in files:
     file_name_arr = re.split('_|\.', file_name)
     headers.append(file_name_arr[1])
-    with open(file_path + file_name, mode = 'r') as file:
+    with open(file_path + file_name, encoding="utf8", errors='ignore', mode = 'r') as file:
         csvFile = csv.reader(file)
         for line in csvFile:
             card_name = line[1].replace(",", '').replace('"', '').replace("\'", '').replace("-", '')

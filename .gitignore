@@ -1,2 +1,3 @@
-price-data-files/
+daily-files/
 output.csv
+.env
