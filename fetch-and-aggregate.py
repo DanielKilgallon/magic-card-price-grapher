@@ -34,4 +34,8 @@ with open('output.csv', mode = 'w', newline = '') as csvfile:
     csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(headers)
     for key in card_data:
+        # filter out cards with 0 prices only
+        price_data = card_data[key][2:]
+        if price_data.count('0') == file_number:
+            continue
         csv_writer.writerow(card_data[key])
