@@ -13,7 +13,12 @@ const layout = {
         bordercolor: "white",
         font: { size: 18 }
     },
-    font: { size: 18 },
+    plot_bgcolor: "rgba(0,0,0,255)",
+    paper_bgcolor: "rgba(0,0,0,255)",
+    font: {
+        size: 18,
+        color: "white"
+    },
     height: window.innerHeight - 100
 };
 const card_map = new Map();
@@ -84,7 +89,7 @@ function autocomplete_card_name() {
                 a_tag.appendChild(li);
                 card_list.appendChild(a_tag);
                 const obj = {
-                    y: card_map.get(li.innerText).slice(2),
+                    y: card_map.get(sanitize_card_name(li.innerText)).slice(2),
                     x: card_map.get("card name").slice(2),
                     hovertemplate: "$%{y:.2f}",
                     name: li.innerText
@@ -95,7 +100,7 @@ function autocomplete_card_name() {
         layout.title = card_name.value;
         Plotly.newPlot("plot-div", card_prices_arr, layout, config);
     }).catch(function (err) {
-        alert("HTTP-Error: " + err);
+        alert("Scryfall API Error: " + err);
     });
 }
 document.getElementById("card_name").addEventListener("input", autocomplete_card_name);
