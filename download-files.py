@@ -20,6 +20,10 @@ def download_s3_folder(bucket_name, s3_folder, local_dir=None):
             os.makedirs(os.path.dirname(target))
         if obj.key[-1] == '/':
             continue
-        bucket.download_file(obj.key, target)
+        if not os.path.exists(target):
+            print("downloading {} to {}".format(obj.key, target))
+            bucket.download_file(obj.key, target)
 
+print("Downloading files from S3")
 download_s3_folder('card-prices-data-lake', 'daily-files/')
+print("Download complete")
