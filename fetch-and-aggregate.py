@@ -29,8 +29,9 @@ for file_name in files:
                 card_data[line[0]] = buffer
     file_number = file_number + 1
 
+
 print("creating output.csv file")
-with open('output.csv', mode = 'w', newline = '') as csvfile:
+with open('output.csv', mode = 'w', newline = '', encoding = 'utf-8') as csvfile:
     csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(headers)
     for key in card_data:
@@ -39,3 +40,4 @@ with open('output.csv', mode = 'w', newline = '') as csvfile:
         if price_data.count('0') == file_number:
             continue
         csv_writer.writerow(card_data[key])
+print("done!")

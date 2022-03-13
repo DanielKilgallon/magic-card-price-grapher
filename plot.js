@@ -47,7 +47,14 @@ function createPlot(card_name) {
 
     if (card_prices) {
         layout.title = card_name;
-        Plotly.newPlot("plot-div", [{ y: card_prices.slice(2), x: card_map.get("card name").slice(2), hovertemplate: "$%{y:.2f}<extra></extra>" }], layout, config);
+        Plotly.newPlot("plot-div", [
+            {
+                y: card_prices.slice(2),
+                x: card_map.get("card name").slice(2),
+                hovertemplate: "$%{y:.2f}<extra></extra>"
+            }],
+            layout,
+            config);
     } else {
         layout.title = "No data found for: " + card_name;
         Plotly.newPlot("plot-div", [], layout, config);
