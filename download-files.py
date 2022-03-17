@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 session = boto3.Session(
-    aws_access_key_id = os.getenv('public_key'),
-    aws_secret_access_key = os.getenv('secret_key'),
+    aws_access_key_id = os.getenv('aws_public_key'),
+    aws_secret_access_key = os.getenv('aws_secret_key'),
 )
 
 s3_folder = 'daily-files/'
