@@ -9,16 +9,14 @@ session = boto3.Session(
     aws_secret_access_key = os.getenv('aws_secret_key'),
 )
 
-s3_folder = 'daily-files/'
-local_dir = None
+s3_bucket_name = 'card-prices-data-lake'
 
 s3 = session.resource('s3')
-bucket = s3.Bucket('card-prices-data-lake')
+bucket = s3.Bucket(s3_bucket_name)
 
 print("Downloading files from S3")
-for obj in bucket.objects.filter(Prefix=s3_folder):
-    target = obj.key if local_dir is None \
-        else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
+for obj in bucket.objects.filter(Prefix=""):
+    target = os.path.join(s3_bucket_name, obj.key)
     if not os.path.exists(os.path.dirname(target)):
         os.makedirs(os.path.dirname(target))
     if obj.key[-1] == '/':

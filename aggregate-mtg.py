@@ -5,7 +5,7 @@ import csv
 card_data = {}
 headers = ['oracle_id','card name']
 
-file_path = 'daily-files/'
+file_path = './card-prices-data-lake/mtg-daily-prices/'
 files = os.listdir(file_path)
 file_number = 0
 print("aggregating data files")
@@ -31,7 +31,7 @@ for file_name in files:
 
 
 print("creating output.csv file")
-with open('output.csv', mode = 'w', newline = '', encoding = 'utf-8') as csvfile:
+with open('mtg-output.csv', mode = 'w', newline = '', encoding = 'utf-8') as csvfile:
     csv_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(headers)
     for key in card_data:

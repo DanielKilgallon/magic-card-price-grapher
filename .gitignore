@@ -1,3 +1,4 @@
-daily-files/
-output.csv
-.env
+card-prices-data-lake/
+mtg-website/
+*.csv
+*.env
