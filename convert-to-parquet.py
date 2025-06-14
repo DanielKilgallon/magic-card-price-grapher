@@ -16,7 +16,4 @@ for filename in os.listdir('card-prices-data-lake/mtg-daily-prices'):
         df.columns = ["oracle_id", "name", "price"]
         df['timestamp'] = file_date
         df.to_parquet(f'./output/{name}.parquet')
-        file_path = Path(f'./card-prices-data-lake/mtg-daily-prices/{filename}')
-        file_path.unlink()
-
 
