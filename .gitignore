@@ -1,4 +1,6 @@
 card-prices-data-lake/
 mtg-website/
+output/
 *.csv
 *.env
+*.parquet
