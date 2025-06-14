@@ -16,7 +16,7 @@ def get_card_data():
     card_data = json.loads(card_data_response.data.decode('utf-8'))
     output_data = []
     print('building list...')
-    today = pandas.to_datetime('today').normalize()
+    today = pd.to_datetime('today').normalize()
     for card in card_data:
         price_value = card['prices']['usd']
         if not price_value:
@@ -25,11 +25,11 @@ def get_card_data():
     return output_data
 
 def lambda_handler(event, context):
-    today = pandas.to_datetime('today').normalize()
+    today = pd.to_datetime('today').normalize()
     s3 = boto3.resource('s3')
     bucket = s3.Bucket('card-prices-data-lake')
     card_data = get_card_data()
-    filename = 'mtg-daily-prices/prices_' + today.strftime('%Y-%m-%d') + '.parquet'
+    filename = f'mtg-daily-prices/year={today.year}/month={today.month}/{today.day}.parquet'
     print('uploading file to s3...')
     parquet_output = io.BytesIO()
     pd.DataFrame(card_data, columns=['oracle_id', 'name', 'price', 'timestamp']).to_parquet(parquet_output)

@@ -15,7 +15,7 @@ s3 = session.resource('s3')
 bucket = s3.Bucket(s3_bucket_name)
 
 print("Downloading files from S3")
-for obj in bucket.objects.filter(Prefix=""):
+for obj in bucket.objects.filter(Prefix="mtg-daily-prices/"):
     target = os.path.join(s3_bucket_name, obj.key)
     if not os.path.exists(os.path.dirname(target)):
         os.makedirs(os.path.dirname(target))
